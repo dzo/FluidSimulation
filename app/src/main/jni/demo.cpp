@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <GL/glut.h>
 #include <time.h>
+#include  <signal.h>
 
 #include "host/halide_dens_step.h"
 #include "host/halide_vel_step.h"
@@ -317,39 +318,51 @@ double get_time() {
 	clock_gettime(CLOCK_REALTIME,&time);
 	return time.tv_sec+time.tv_nsec/1e9;
 }
-
+static int frames=0;
 static void idle_func ( void )
 {
 	get_from_UI ( dens_prev, u_prev, v_prev );
-//	vel_step ( N, u, v, u_prev, v_prev, visc, dt );
-//	dens_step ( N, dens, dens_prev, u, v, diff, dt );
 	double time,time1,time2,newtime;
  	time=get_time();
+#if NOHALIDE
+	time1=get_time();
+	vel_step ( N, u, v, u_prev, v_prev, visc, dt );
+	time2=get_time();
+	dens_step ( N, dens, dens_prev, u, v, diff, dt );
+#else
  	u0_h.set_host_dirty();
 	v0_h.set_host_dirty();
-    dens0_h.set_host_dirty();
-    time1=get_time();
+    	dens0_h.set_host_dirty();
+    	time1=get_time();
 	halide_vel_step(u_h, v_h, u0_h, v0_h, visc, dt, u_h, v_h);
 	halide_dens_step(dens_h,dens0_h,u_h,v_h,diff,dt, dens_h);
 	time2=get_time();
-    u_h.copy_to_host();
-    v_h.copy_to_host();
+    	u_h.copy_to_host();
+    	v_h.copy_to_host();
 	dens_h.copy_to_host();
 //	dens_h.device_sync();
 //	u_h.device_sync();
 //    v_h.device_sync();
+#endif
+	frames++;
 	if(time-lasttime>1.0) {
 		lasttime=time;
 		newtime=get_time();
-		printf("Fps:%f %f \n", 1.0 / (newtime-time), 1.0/(time2-time1));
+		printf("Fps:%f %f %d\n", 1.0 / (newtime-time), 1.0/(time2-time1),frames);
+		frames=0;
 	}
+#ifndef NOUI
 	glutSetWindow ( win_id );
 	glutPostRedisplay ();
+#endif
 }
 
 static void display_func ( void )
 {
 	pre_display ();
+	 u_h.copy_to_host();
+        v_h.copy_to_host();
+        dens_h.copy_to_host();
 
 		if ( dvel ) draw_velocity ();
 		else		draw_density ();
@@ -394,6 +407,9 @@ static void open_glut_window ( void )
    main --- main routine
   ----------------------------------------------------------------------
 */
+void  INThandler(int sig) {
+	exit(0);
+}
 
 int main ( int argc, char ** argv )
 {
@@ -440,6 +456,11 @@ int main ( int argc, char ** argv )
 
 	if ( !allocate_data () ) exit ( 1 );
 	clear_data ();
+
+	signal(SIGINT, INThandler);
+#ifdef NOUI
+	while(1) idle_func();
+#endif
 
 	win_x = 512;
 	win_y = 512;

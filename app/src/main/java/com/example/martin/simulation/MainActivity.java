@@ -18,13 +18,11 @@ import static java.lang.Thread.sleep;
 
 import com.example.martin.simulation.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class MainActivity extends AppCompatActivity  {
 
     private static final String TAG = "Simulation";
     private boolean mPaused=false;
     private Thread mThread;
-    private SensorManager mSensorManager;
-    private Sensor mAccel;
     private SharedPreferences mPreferences;
     private int mUpdateTime=10;
     private ActivityMainBinding mMainLayout;
@@ -45,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if(nat!=mNative && mNative!=-1 && nat>1){
             System.exit(0);
         }
-//        mMainLayout.simulation.forceLayout();
         mNative=Integer.parseInt(getPref(R.string.halide_key,R.string.halide_default));
         mMainLayout.simulation.setNative(mNative);
         mMainLayout.simulation.setParams(getIntPref(R.string.scale_key,R.string.scale_default),
@@ -101,24 +98,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mMainLayout.simulation.setFocusable(true);
         mUpdateTime=getIntPref(R.string.updatetime_key,R.string.default_updatetime);
         init();
-        mSensorManager=(SensorManager)getSystemService(SENSOR_SERVICE);
-        if(mSensorManager!=null)
-            mAccel = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         findViewById(R.id.menu).setOnClickListener(view -> {
-           // getSupportFragmentManager()
-           //     .beginTransaction()
-           //     .replace(android.R.id.content, new SettingsActivity.SettingsFragment())
-           //     .commit();
             startActivity(new Intent(MainActivity.this,SettingsActivity.class));
-            //finish();
          });
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if(mSensorManager!=null)
-            mSensorManager.unregisterListener(this);
         mPaused=true;
         try {
             mThread.join();
@@ -132,29 +119,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onResume() {
         super.onResume();
-        if(mSensorManager!=null)
-            mSensorManager.registerListener(this,
-                    mAccel, SensorManager.SENSOR_DELAY_GAME);
         Log.i(TAG,"onResume");
-        //mMainLayout.simulation.init();
         if(mPaused) {
             Log.i(TAG,"onResumePaused");
             mPaused=false;
             init();
         }
-    }
-
-    // Accelerometer callbacks
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        float mul=Float.parseFloat(mPreferences.getString(getString(R.string.gravity_key),
-                getString(R.string.default_gravity)))/10.0f;
-     //   Log.i(TAG,"G="+sensorEvent.values[0]+","+sensorEvent.values[1]);
-       // mMainLayout.simulation.setGravity(-sensorEvent.values[0]*mul,sensorEvent.values[1]*mul);
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 }
