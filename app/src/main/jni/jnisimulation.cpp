@@ -86,8 +86,6 @@ void project(int NW, int NH, float *u, float *v, float *p, float *div) {
 
 void dens_step(int NW, int NH, float *x, float *x0, float *u, float *v, float diff, float dt) {
     add_source(NW, NH, x, x0, dt);
-    //SWAP ( x0, x ); diffuse ( N, 0, x, x0, diff, dt );
-    //SWAP ( x0, x ); advect ( N, 0, x, x0, u, v, dt );
     diffuse(NW, NH, x0, x, diff, dt);
     advect(NW, NH, x, x0, u, v, dt);
 }
@@ -147,15 +145,6 @@ Java_com_example_martin_simulation_NativeSimulation_ui_1update(JNIEnv *env, jobj
                                                                  jfloat x, jfloat y, jfloat px,
                                                                  jfloat py, jfloat source, jfloat force, int flames) {
     int NW = width;
-    /*
-    for (int i = 0; i <= height+1; i++) {
-        for (int j = 0; j <= width+1; j++) {
-            dens_prev[IX(i, j)] = 0.0f;
-            v_prev[IX(i, j)] = 0.0f;
-            u_prev[IX(i, j)] = 0.0f;
-        }
-    }
-    */
     int sz=(height+2)*(width+2)*4;
     memset(dens_prev,0,sz);
     memset(v_prev,0,sz);
@@ -167,8 +156,6 @@ Java_com_example_martin_simulation_NativeSimulation_ui_1update(JNIEnv *env, jobj
         u_prev[IX(height - 10, xp)] = -force;
     }
     if(x<0) return;
-
-    int xx=x,yy=y;
     for(int xx=(int) x-1; xx<(int)x+2; xx++)
         for(int yy=(int) y-1; yy<(int)y+2; yy++) {
             if (xx > 0 && yy > 0 && xx < width && yy < height) {
@@ -183,7 +170,6 @@ Java_com_example_martin_simulation_NativeSimulation_ui_1update(JNIEnv *env, jobj
 }
 JNIEXPORT void JNICALL
 Java_com_example_martin_simulation_NativeSimulation_dens_1step(JNIEnv *env, jobject thiz, jfloat diff, jfloat dt) {
-
     if(halide>1) {
         dens0_h.set_host_dirty();
         halide_dens_step(dens_h, dens0_h, u_h, v_h, diff, dt, dens_h);
@@ -194,11 +180,9 @@ Java_com_example_martin_simulation_NativeSimulation_dens_1step(JNIEnv *env, jobj
 JNIEXPORT void JNICALL
 Java_com_example_martin_simulation_NativeSimulation_vel_1step(JNIEnv *env, jobject thiz, jfloat visc, jfloat dt) {
    if(halide>1) {
-
        u0_h.set_host_dirty();
        v0_h.set_host_dirty();
        halide_vel_step(u_h, v_h, u0_h, v0_h, visc, dt, u_h, v_h);
-
    }
    else
        vel_step(width, height, u, v, u_prev, v_prev, visc, dt);

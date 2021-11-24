@@ -45,7 +45,9 @@ $(eval $(call haliderules,host_gl,host-openglcompute-profile))
 	$(CXX) $(CXXFLAGS) $< $(GENERATOR_SRC) -g $(LIB_HALIDE) -o $@ -lpthread -fno-rtti -ldl -lz -lncurses -rdynamic -O3 $(LDFLAGS) \
 	$(LLVM_SHARED_LIBS)
 demo: demo.cpp host/libnavierstokes_halide.a
-	clang++ -O3  demo.cpp -o demo -lglut -lGL -lGLU -lGLEW -lX11 -ldl -lpthread -lOpenCL host/libnavierstokes_halide.a -DNOUI
+	clang++ -O3  demo.cpp -o demo -lglut -lGL -lGLU -lGLEW -lX11 -ldl -lpthread -lOpenCL host/libnavierstokes_halide.a
+demo_c: demo.cpp host/libnavierstokes_halide.a
+	clang++ -O3  demo.cpp -o demo_c -lglut -lGL -lGLU -lGLEW -lX11 -ldl -lpthread -lOpenCL host/libnavierstokes_halide.a -DNOUI -DNOHALIDE solver.cpp
 demo_opencl: demo.cpp host_opencl/libnavierstokes_halide.a
 	clang++ -O3  demo.cpp -o demo_opencl -lglut -lGL -lGLU -lGLEW -lX11 -ldl -lpthread -lOpenCL host_opencl/libnavierstokes_halide.a -DNOUI
 demo_cuda: demo.cpp host_cuda/libnavierstokes_halide.a

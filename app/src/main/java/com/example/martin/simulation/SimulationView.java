@@ -33,7 +33,7 @@ public class SimulationView extends View {
     private long mLasttime =0;
     private int mNative;
     private Paint mPaint=new Paint();
-    private int mWidth, mHeight;
+    private int mWidth=0, mHeight=0;
     private Bitmap mBitmap;
     private Simulation mSimulation;
     private float mDiffusion;
@@ -80,7 +80,7 @@ public class SimulationView extends View {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         Log.i(TAG,"onLayout:"+changed+","+(right - left)+","+(bottom - top));
-        if(changed) {
+        if(changed && mWidth==0) {
             mWidth = (right - left);
             mHeight = (bottom - top);
             init();

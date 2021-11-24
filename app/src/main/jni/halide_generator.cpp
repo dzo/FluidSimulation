@@ -54,7 +54,7 @@ FuncRef lin_solve(Func in, Func x0, Expr a, Expr c, Expr w, Expr h, int num_step
         if(k%2==0 || k==num_steps) {
             if(!auto_sch) {
                 if (gpu) {
-                    good_schedule({f[k],f[k - 1]});
+                    good_schedule({f[k]});//,f[k - 1]});
                 } else {
                     f[k].tile(x, y, xi, yi, 16, 16);
                     f[k].compute_root().parallel(y).vectorize(xi, 4);

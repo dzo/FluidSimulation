@@ -337,9 +337,9 @@ static void idle_func ( void )
 	halide_vel_step(u_h, v_h, u0_h, v0_h, visc, dt, u_h, v_h);
 	halide_dens_step(dens_h,dens0_h,u_h,v_h,diff,dt, dens_h);
 	time2=get_time();
-    	u_h.copy_to_host();
-    	v_h.copy_to_host();
-	dens_h.copy_to_host();
+//    	u_h.copy_to_host();
+//    	v_h.copy_to_host();
+//	dens_h.copy_to_host();
 //	dens_h.device_sync();
 //	u_h.device_sync();
 //    v_h.device_sync();
@@ -457,7 +457,7 @@ int main ( int argc, char ** argv )
 	if ( !allocate_data () ) exit ( 1 );
 	clear_data ();
 
-	signal(SIGINT, INThandler);
+//	signal(SIGINT, INThandler);
 #ifdef NOUI
 	while(1) idle_func();
 #endif
