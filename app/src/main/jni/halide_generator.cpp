@@ -113,7 +113,7 @@ public:
         auto_sch = auto_schedule;
         Expr w = dens.width() - 2;
         Expr h = dens.height() - 2;
-        src_added(x,y) = dens(x,y) + dens_prev(x,y)*dt;
+        src_added(x,y) = dens(x,y) + dens_prev(x,y) * dt;
         diffused(x,y) = diffuse(dens_prev, src_added, diff, dt, w, h);
         output(x, y) = advect(diffused, u, v, dt, w, h);
     }
