@@ -49,11 +49,11 @@ demo: demo.cpp host/libnavierstokes_halide.a
 demo_c: demo.cpp host/libnavierstokes_halide.a
 	clang++ -O3  demo.cpp -o demo_c -lglut -lGL -lGLU -lGLEW -lX11 -ldl -lpthread -lOpenCL host/libnavierstokes_halide.a -DNOUI -DNOHALIDE solver.cpp
 demo_opencl: demo.cpp host_opencl/libnavierstokes_halide.a
-	clang++ -O3  demo.cpp -o demo_opencl -lglut -lGL -lGLU -lGLEW -lX11 -ldl -lpthread -lOpenCL host_opencl/libnavierstokes_halide.a -DNOUI
+	clang++ -O3  demo.cpp -o demo_opencl -lglut -lGL -lGLU -lGLEW -lX11 -ldl -lpthread -lOpenCL host_opencl/libnavierstokes_halide.a
 demo_cuda: demo.cpp host_cuda/libnavierstokes_halide.a
-	clang++ -O3  demo.cpp -o demo_cuda -lglut -lGL -lGLU -lGLEW -lX11 -ldl -lpthread -lOpenCL host_cuda/libnavierstokes_halide.a -DNOUI
+	clang++ -O3  demo.cpp -o demo_cuda -lglut -lGL -lGLU -lGLEW -lX11 -ldl -lpthread -lOpenCL host_cuda/libnavierstokes_halide.a
 demo_gl: demo.cpp host_gl/libnavierstokes_halide.a
-	clang++ -O3  demo.cpp -o demo_gl -lglut -lGL -lGLU -lGLEW -lX11 -ldl -lpthread -lOpenCL host_gl/libnavierstokes_halide.a -DNOUI
+	clang++ -O3  demo.cpp -o demo_gl -lglut -lGL -lGLU -lGLEW -lX11 -ldl -lpthread -lOpenCL host_gl/libnavierstokes_halide.a
 testdemo: demo
 	./demo 384 0.1 0.000006 0 5 500
 testdemo_cuda: demo_cuda
