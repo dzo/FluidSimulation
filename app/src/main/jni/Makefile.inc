@@ -1,5 +1,5 @@
-HALIDE_BIN_PATH ?= /usr/local/
-HALIDE_SRC_PATH ?= /usr/local/share/halide
+HALIDE_BIN_PATH ?= /opt/Halide-16.0.0-x86-64-linux
+HALIDE_SRC_PATH ?= /opt/Halide-16.0.0-x86-64-linux/share/Halide
 LDFLAGS ?= 
 
 #HALIDE_BIN_PATH = /home/martin/Halide

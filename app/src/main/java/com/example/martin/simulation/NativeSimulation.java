@@ -9,6 +9,7 @@ public class NativeSimulation implements Simulation {
             if (halide == 2 || halide == 1) System.loadLibrary("navierstokes");
             if (halide == 3) System.loadLibrary("navierstokes_gl");
             if (halide == 4) System.loadLibrary("navierstokes_cl");
+            if (halide == 5) System.loadLibrary("navierstokes_vk");
         } catch (UnsatisfiedLinkError e) {
             System.loadLibrary("navierstokes"); // should always work.
         }

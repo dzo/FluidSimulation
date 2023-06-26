@@ -3,6 +3,7 @@ using namespace Halide;
 using namespace std;
 bool gpu=false;
 bool auto_sch=false;
+bool auto_schedule=false;
 
 Var x("x"), y("y"),xi("xi"), yi("yi"), yo("yo"),xo("xo");
 
@@ -82,15 +83,15 @@ FuncRef advect (Func d0, Func u, Func v, Expr dt, Expr w, Expr h) {
     Expr j1=j0+1;
     Expr s1 = xx-i0;
     Expr t1 = yy-j0;
-    advected(x,y) = lerp(lerp(d0(i0,j0),d0(i0,j1),t1),lerp(d0(i1,j0),d0(i1,j1),t1),s1);
+    advected(x,y) = lerp(lerp(d0(i0,j0),d0(i0,j0+1),t1),lerp(d0(i0+1,j0),d0(i0+1,j0+1),t1),s1);
     return advected(x,y);
 }
 
 void project (Func u, Func v, Func uu, Func vv, Expr w, Expr h ) {
-    Func div("div"),p{"p"};;
+    Func div("div"),p{"p"};
     Expr m=-1.0f/h;
     div(x,y) = m*(v(x+1,y)-v(x-1,y)+u(x,y+1)-u(x,y-1));
-    p(x,y)=convolve(div, w, h);
+    p(x,y)= convolve(div, w, h);
     vv(x,y) = v(x,y) - 0.5f*w*(p(x+1,y)-p(x-1,y));
     uu(x,y) = u(x,y) - 0.5f*h*(p(x,y+1)-p(x,y-1));
     good_schedule({div});

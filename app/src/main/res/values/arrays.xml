@@ -90,6 +90,7 @@
         <item>"Halide CPU"</item>
         <item>"Halide OpenGL"</item>
         <item>"Halide OpenCL"</item>
+        <item>"Halide Vulkan"</item>
     </string-array>
     <string-array name="halide_vals" >
         <item>0</item>
@@ -97,6 +98,7 @@
         <item>2</item>
         <item>3</item>
         <item>4</item>
+        <item>5</item>
     </string-array>
     <string-array name="scale_vals" >
         <item>1</item>

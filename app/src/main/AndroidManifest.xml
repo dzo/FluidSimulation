@@ -13,7 +13,8 @@
         android:extractNativeLibs="true"
         tools:targetApi="m"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name="com.example.martin.simulation.MainActivity">
+        <activity android:name="com.example.martin.simulation.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
