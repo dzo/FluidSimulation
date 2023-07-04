@@ -69,6 +69,10 @@ testdemo_cuda: demo_cuda
 	./demo_cuda 384 0.1 0.000006 0 5 500
 testdemo_vk: demo_vk
 	./demo_vk 384 0.1 0.000006 0 5 500
+testdemo_gl: demo_gl
+	./demo_gl 384 0.1 0.000006 0 5 500
+testdemo_opencl: demo_opencl
+	./demo_opencl 384 0.1 0.000006 0 5 500
 clean:
 	rm -f halide_generator *.a *.o */*.o */*.a */*.h
 

@@ -33,6 +33,8 @@ FuncRef convolve(Func in, Expr w, Expr h) {
     if(!auto_sch) {
         if (gpu) {
             good_schedule({fx, fy});
+            //fx.compute_at(fy,yi).gpu_threads(x, y);//gpu_tile(x,y, xo,yo,xi, yi, 16,16);
+            //fy.compute_root().gpu_tile(x,y, xo,yo,xi, yi, 16,16);
         } else {
             fx.compute_at(fy,y).parallel(y).vectorize(x, 16);
             fy.compute_root().parallel(y).vectorize(x, 16);
@@ -152,7 +154,7 @@ public:
     Func au0{"au0"}, av0{"av0"}, adU{"adU"}, adV{"adV"};
 
     void generate() {
-        gpu = get_target().has_gpu_feature() || get_target().has_feature(Target::OpenGLCompute);
+        gpu = get_target().has_gpu_feature() || get_target().has_feature(Target::OpenGLCompute)|| get_target().has_feature(Target::Vulkan) ;
         auto_sch = auto_schedule;
         Expr w = u.width() - 2;
         Expr h = u.height() - 2;
@@ -177,12 +179,17 @@ public:
             dt.set_estimate(0.1);
             visc.set_estimate(0.00001);
         } else {
-            good_schedule({uu, vv, au0, av0, adU, adV, outputu, outputv});
+            good_schedule({ uu, vv, au0, av0, adU, adV, outputu, outputv});
             if(!gpu) {
                 adU.compute_with(adV, x);
                 uu.compute_with(vv, x);
                 au0.compute_with(av0, x);
                 outputu.compute_with(outputv, x);
+            } else {
+                adU.compute_with(adV, xo);
+                uu.compute_with(vv, xo);
+                au0.compute_with(av0, xo);
+                outputu.compute_with(outputv, xo);
             }
         }
     }
